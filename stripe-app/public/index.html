@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Stripe Checkout Demo</title>
+    <style>
+      body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial; padding: 32px; }
+      .container { max-width: 640px; margin: 0 auto; }
+      button { padding: 12px 16px; font-size: 16px; cursor: pointer; }
+      .card { border: 1px solid #e1e1e1; padding: 24px; border-radius: 8px; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Stripe Checkout</h1>
+      <div class="card">
+        <p>Product: Pro Subscription</p>
+        <p>Price: $20.00</p>
+        <button id="checkout">Buy Now</button>
+      </div>
+      <div id="result"></div>
+    </div>
+
+    <script>
+      async function getPublishableKey() {
+        const res = await fetch('/config');
+        const data = await res.json();
+        return data.publishableKey;
+      }
+
+      document.getElementById('checkout').addEventListener('click', async () => {
+        const res = await fetch('/create-checkout-session', { method: 'POST' });
+        const data = await res.json();
+        if (data.url) {
+          window.location.href = data.url;
+        } else {
+          document.getElementById('result').textContent = 'Error starting checkout';
+        }
+      });
+    </script>
+  </body>
+</html>
